@@ -1,14 +1,20 @@
 from PIL import Image
 import torch
 import json
+import sys
 from transformers import ViTFeatureExtractor, ViTForImageClassification,ViTImageProcessor
 # Load model and feature extractor
 model = ViTForImageClassification.from_pretrained("./public/food")
 feature_extractor = ViTImageProcessor.from_pretrained("./public/food")
 
 # Load image
-image_path = 'C:/Users/user/Desktop/calorie-ai/public/plate.jpg'  # Use the correct path for the uploaded image
-image = Image.open(image_path)
+if len(sys.argv) < 2:
+    print(json.dumps({"error": "No image path provided"}))
+    sys.exit(1)
+
+image_path = sys.argv[1]
+
+image = Image.open(image_path).convert("RGB")
 
 # Preprocess image
 inputs = feature_extractor(images=image, return_tensors="pt")
